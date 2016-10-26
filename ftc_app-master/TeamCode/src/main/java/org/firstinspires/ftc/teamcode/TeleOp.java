@@ -38,9 +38,9 @@ public class TeleOp extends OpMode {
         leftForwardDrive = hardwareMap.dcMotor.get("left_forward_drive");
         rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         rightForwardDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftShooter = hardwareMap.dcMotor.get("left_shooter");
-        rightShooter = hardwareMap.dcMotor.get("right_shooter");
-        intake = hardwareMap.dcMotor.get("intake");
+        //leftShooter = hardwareMap.dcMotor.get("left_shooter");
+        //rightShooter = hardwareMap.dcMotor.get("right_shooter");
+        //intake = hardwareMap.dcMotor.get("intake");
         buttonPusher = hardwareMap.servo.get("buttonPusher");
         motorType = "tank";
         joystick_1_x = 0;
@@ -85,10 +85,10 @@ public class TeleOp extends OpMode {
         updateMotors(gamepad1);
 
         //update shooters
-        updateShooters(buttonX);
+        //updateShooters(buttonX);
 
         //update intake
-        updateIntake(buttonB);
+        //updateIntake(buttonB);
 
         //update button pusher
         updateButtonPusher(buttonY);
@@ -104,19 +104,31 @@ public class TeleOp extends OpMode {
         rightBackDrive.setPower(0);
         leftForwardDrive.setPower(0);
         rightForwardDrive.setPower(0);
-        updateShooters(false);
-        updateIntake(false);
+        //updateShooters(false);
+        //updateIntake(false);
         updateButtonPusher(false);
     }
 
     public void updateMotors(Gamepad gamepad) {
         if (motorType.equals("tank")) {
             leftBackDrive.setPower(gamepad.left_stick_y);
-            rightBackDrive.setPower(gamepad.left_stick_y);
-            leftForwardDrive.setPower(gamepad.right_stick_y);
+            rightBackDrive.setPower(gamepad.right_stick_y);
+            leftForwardDrive.setPower(gamepad.left_stick_y);
             rightForwardDrive.setPower(gamepad.right_stick_y);
         } else if (motorType.equals("arcade")) {
-
+            //Coming soon...
+        } else if (motorType.equals("mech")) {
+            float frontBase = gamepad.left_stick_y;
+            float frontBaseLeft = frontBase + gamepad.right_stick_x;
+            float frontBaseRight = -frontBaseLeft;
+            float frontLeft = frontBaseLeft + gamepad.left_stick_x;
+            float frontRight = frontBaseRight - gamepad.left_stick_x;
+            float backLeft = frontBaseRight + gamepad.left_stick_x;
+            float backRight = frontBaseLeft - gamepad.left_stick_x;
+            leftBackDrive.setPower(backLeft);
+            rightBackDrive.setPower(backRight);
+            leftForwardDrive.setPower(frontLeft);
+            rightForwardDrive.setPower(frontRight);
         }
     }
 
