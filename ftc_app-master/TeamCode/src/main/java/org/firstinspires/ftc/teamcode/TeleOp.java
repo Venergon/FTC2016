@@ -23,6 +23,7 @@ public class TeleOp extends OpMode {
     DcMotor rightShooter;
     DcMotor intake;
     Servo buttonPusher;
+	GyroSensor gyro;
     String motorType;
     float joystick_1_x;
     float joystick_1_y;
@@ -45,6 +46,7 @@ public class TeleOp extends OpMode {
         //rightShooter = hardwareMap.dcMotor.get("right_shooter");
         //intake = hardwareMap.dcMotor.get("intake");
         buttonPusher = hardwareMap.servo.get("buttonPusher");
+		gyro = hardwareMap.gyroSensor.get("gyro");
         motorType = "mech";
         joystick_1_x = 0;
         joystick_1_y = 0;
@@ -121,13 +123,15 @@ public class TeleOp extends OpMode {
         } else if (motorType.equals("arcade")) {
             //Coming soon...
         } else if (motorType.equals("mech")) {
+			float error = gyro.get;
             float gply = gamepad.left_stick_y;
             float gplx = gamepad.left_stick_x;
             float gprx = gamepad.right_stick_x;
-            float lf = gply+gplx+gprx;
-            float rf = gply-gplx-gprx;
-            float lb = gply-gplx+gprx;
-            float rb = gply+gplx-gprx;
+			float turn = gprx-error;
+            float lf = gply+gplx+turn;
+            float rf = gply-gplx-turn;
+            float lb = gply-gplx+turn;
+            float rb = gply+gplx-turn;
             float sortList[] = {Math.abs(lf),Math.abs(rf),Math.abs(lb),Math.abs(rb)};
             Arrays.sort(sortList);
             if (sortList[3] != 0) {
