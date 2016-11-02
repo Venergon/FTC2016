@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -24,16 +23,18 @@ public class Auto extends OpMode {
     ElapsedTime timer;
     float autoTime;
     int state;
-    int INITIAL_STATE;
-    int BUTTON_STATE;
-    int PARTICLE_STATE;
-    int PARK_STATE;
+    int BEFORE_PUSH_STATE;
+    int TO_PUSH_STATE;
+    int TURN_TO_FIRST_BEACON;
+
+    int TO_PUSH_POSITION;
 
     public void setConstants() {
-        INITIAL_STATE = 0;
-        BUTTON_STATE = 1;
-        PARTICLE_STATE = 3;
-        PARK_STATE = 4;
+        BEFORE_PUSH_STATE = 0;
+        TO_PUSH_STATE = 1;
+        TURN_TO_FIRST_BEACON = 2;
+
+        TO_PUSH_POSITION = 500;
     }
     public void init(){
         setConstants();
@@ -64,18 +65,23 @@ public class Auto extends OpMode {
     }
 
     public void loop() {
-        if (state == INITIAL_STATE) {
-            if (timer.time() <= autoTime) {
-                leftBackDrive.setTargetPosition(1);
-                rightBackDrive.setTargetPosition(1);
-                leftForwardDrive.setTargetPosition(1);
-                rightForwardDrive.setTargetPosition(1);
-            } else {
-                state = BUTTON_STATE;
+        if (state == BEFORE_PUSH_STATE) {
+            leftBackDrive.setTargetPosition(TO_PUSH_POSITION);
+            rightBackDrive.setTargetPosition(TO_PUSH_POSITION);
+            leftForwardDrive.setTargetPosition(TO_PUSH_POSITION);
+            rightForwardDrive.setTargetPosition(TO_PUSH_POSITION);
+            state = TO_PUSH_STATE;
+
+
+        } else if (state == TO_PUSH_STATE) {
+            if (!leftBackDrive.isBusy() && !rightBackDrive.isBusy() && !leftForwardDrive.isBusy() && !leftForwardDrive.isBusy()) {
+                state = TURN_TO_FIRST_BEACON;
             }
-        } else if (state == BUTTON_STATE) {
-            buttonPusher.setPosition();
+
+
         }
 
     }
+
+
 }

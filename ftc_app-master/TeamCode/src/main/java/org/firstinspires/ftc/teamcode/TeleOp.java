@@ -48,6 +48,7 @@ public class TeleOp extends OpMode {
         //intake = hardwareMap.dcMotor.get("intake");
         buttonPusher = hardwareMap.servo.get("buttonPusher");
 		gyro = hardwareMap.gyroSensor.get("gyro");
+        gyro.calibrate();
         motorType = "mech";
         joystick_1_x = 0;
         joystick_1_y = 0;
