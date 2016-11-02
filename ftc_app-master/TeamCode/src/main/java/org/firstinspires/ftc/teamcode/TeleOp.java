@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.security.KeyStore;
+import java.util.Arrays;
+
 /**
  * Created by Segway on 19-Oct-16.
  */
@@ -16,7 +19,7 @@ public class TeleOp extends OpMode {
     DcMotor rightBackDrive;
     DcMotor leftForwardDrive;
     DcMotor rightForwardDrive;
-    DcMotor leftShooter;
+    DcMotor shooter;
     DcMotor rightShooter;
     DcMotor intake;
     Servo buttonPusher;
@@ -38,11 +41,11 @@ public class TeleOp extends OpMode {
         leftForwardDrive = hardwareMap.dcMotor.get("left_forward_drive");
         rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         rightForwardDrive.setDirection(DcMotor.Direction.REVERSE);
-        //leftShooter = hardwareMap.dcMotor.get("left_shooter");
+        shooter = hardwareMap.dcMotor.get("shooter");
         //rightShooter = hardwareMap.dcMotor.get("right_shooter");
         //intake = hardwareMap.dcMotor.get("intake");
-        buttonPusher = hardwareMap.servo.get("buttonPusher");
-        motorType = "tank";
+      //  buttonPusher = hardwareMap.servo.get("buttonPusher");
+        motorType = "mech";
         joystick_1_x = 0;
         joystick_1_y = 0;
         joystick_2_x = 0;
@@ -85,13 +88,13 @@ public class TeleOp extends OpMode {
         updateMotors(gamepad1);
 
         //update shooters
-        //updateShooters(buttonX);
+        updateShooters(buttonX);
 
         //update intake
         //updateIntake(buttonB);
 
         //update button pusher
-        updateButtonPusher(buttonY);
+        //updateButtonPusher(buttonY);
     }
 
 
@@ -104,9 +107,9 @@ public class TeleOp extends OpMode {
         rightBackDrive.setPower(0);
         leftForwardDrive.setPower(0);
         rightForwardDrive.setPower(0);
-        //updateShooters(false);
+        updateShooters(false);
         //updateIntake(false);
-        updateButtonPusher(false);
+        //updateButtonPusher(false);
     }
 
     public void updateMotors(Gamepad gamepad) {
@@ -118,30 +121,38 @@ public class TeleOp extends OpMode {
         } else if (motorType.equals("arcade")) {
             //Coming soon...
         } else if (motorType.equals("mech")) {
-            float frontBase = gamepad.left_stick_y;
-            float frontBaseLeft = frontBase + gamepad.right_stick_x;
-            float frontBaseRight = -frontBaseLeft;
-            float frontLeft = frontBaseLeft + gamepad.left_stick_x;
-            float frontRight = frontBaseRight - gamepad.left_stick_x;
-            float backLeft = frontBaseRight + gamepad.left_stick_x;
-            float backRight = frontBaseLeft - gamepad.left_stick_x;
-            leftBackDrive.setPower(backLeft);
-            rightBackDrive.setPower(backRight);
-            leftForwardDrive.setPower(frontLeft);
-            rightForwardDrive.setPower(frontRight);
+            float gply = gamepad.left_stick_y;
+            float gplx = gamepad.left_stick_x;
+            float gprx = gamepad.right_stick_x;
+            float lf = gply+gplx+gprx;
+            float rf = gply-gplx-gprx;
+            float lb = gply-gplx+gprx;
+            float rb = gply+gplx-gprx;
+            float sortList[] = {Math.abs(lf),Math.abs(rf),Math.abs(lb),Math.abs(rb)};
+            Arrays.sort(sortList);
+            if (sortList[3] != 0) {
+                lf = lf / sortList[3];
+                rf = rf / sortList[3];
+                lb = lb / sortList[3];
+                rb = rb / sortList[3];
+            }
+            leftBackDrive.setPower(lb);
+            rightBackDrive.setPower(rb);
+            leftForwardDrive.setPower(lf);
+            rightForwardDrive.setPower(rf);
         }
     }
 
     public void updateShooters(boolean shouldShoot) {
         if (shouldShoot) {
-            leftShooter.setPower(1);
-            rightShooter.setPower(-1);
+            shooter.setPower(1);
+            //rightShooter.setPower(-1);
         } else {
-            leftShooter.setPower(0);
-            rightShooter.setPower(0);
+            shooter.setPower(0);
+            //rightShooter.setPower(0);
         }
     }
-
+ad
     public void updateIntake(boolean shouldIntake) {
         if (shouldIntake) {
             intake.setPower(1);
