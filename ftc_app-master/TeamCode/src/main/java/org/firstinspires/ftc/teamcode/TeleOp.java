@@ -44,7 +44,7 @@ public class TeleOp extends OpMode {
         shooter = hardwareMap.dcMotor.get("shooter");
         //rightShooter = hardwareMap.dcMotor.get("right_shooter");
         //intake = hardwareMap.dcMotor.get("intake");
-      //  buttonPusher = hardwareMap.servo.get("buttonPusher");
+        buttonPusher = hardwareMap.servo.get("buttonPusher");
         motorType = "mech";
         joystick_1_x = 0;
         joystick_1_y = 0;
@@ -94,7 +94,7 @@ public class TeleOp extends OpMode {
         //updateIntake(buttonB);
 
         //update button pusher
-        //updateButtonPusher(buttonY);
+        updateButtonPusher(buttonY);
     }
 
 
@@ -109,7 +109,7 @@ public class TeleOp extends OpMode {
         rightForwardDrive.setPower(0);
         updateShooters(false);
         //updateIntake(false);
-        //updateButtonPusher(false);
+        updateButtonPusher(false);
     }
 
     public void updateMotors(Gamepad gamepad) {
