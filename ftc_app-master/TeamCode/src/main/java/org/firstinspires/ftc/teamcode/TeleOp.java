@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import java.security.KeyStore;
@@ -123,16 +124,16 @@ public class TeleOp extends OpMode {
         } else if (motorType.equals("arcade")) {
             //Coming soon...
         } else if (motorType.equals("mech")) {
-			float error = gyro.get;
+			double error = gyro.getRotationFraction();
             float gply = gamepad.left_stick_y;
             float gplx = gamepad.left_stick_x;
             float gprx = gamepad.right_stick_x;
-			float turn = gprx-error;
-            float lf = gply+gplx+turn;
-            float rf = gply-gplx-turn;
-            float lb = gply-gplx+turn;
-            float rb = gply+gplx-turn;
-            float sortList[] = {Math.abs(lf),Math.abs(rf),Math.abs(lb),Math.abs(rb)};
+			double turn = gprx-error;
+            double lf = gply+gplx+turn;
+            double rf = gply-gplx-turn;
+            double lb = gply-gplx+turn;
+            double rb = gply+gplx-turn;
+            double sortList[] = {Math.abs(lf),Math.abs(rf),Math.abs(lb),Math.abs(rb)};
             Arrays.sort(sortList);
             if (sortList[3] != 0) {
                 lf = lf / sortList[3];

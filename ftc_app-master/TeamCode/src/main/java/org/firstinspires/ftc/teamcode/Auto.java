@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -25,10 +26,14 @@ public class Auto extends OpMode {
     int state;
     int INITIAL_STATE;
     int BUTTON_STATE;
+    int PARTICLE_STATE;
+    int PARK_STATE;
 
     public void setConstants() {
         INITIAL_STATE = 0;
         BUTTON_STATE = 1;
+        PARTICLE_STATE = 3;
+        PARK_STATE = 4;
     }
     public void init(){
         setConstants();
@@ -61,18 +66,14 @@ public class Auto extends OpMode {
     public void loop() {
         if (state == INITIAL_STATE) {
             if (timer.time() <= autoTime) {
-                leftBackDrive.setPower(-1);
-                rightBackDrive.setPower(-1);
-                leftForwardDrive.setPower(-1);
-                rightForwardDrive.setPower(-1);
+                leftBackDrive.setTargetPosition(1);
+                rightBackDrive.setTargetPosition(1);
+                leftForwardDrive.setTargetPosition(1);
+                rightForwardDrive.setTargetPosition(1);
             } else {
                 state = BUTTON_STATE;
             }
         } else if (state == BUTTON_STATE) {
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(0);
-            leftForwardDrive.setPower(0);
-            rightForwardDrive.setPower(0);
             buttonPusher.setPosition();
         }
 
