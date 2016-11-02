@@ -152,7 +152,7 @@ public class TeleOp extends OpMode {
             //rightShooter.setPower(0);
         }
     }
-ad
+
     public void updateIntake(boolean shouldIntake) {
         if (shouldIntake) {
             intake.setPower(1);
