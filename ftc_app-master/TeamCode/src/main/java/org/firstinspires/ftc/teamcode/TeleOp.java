@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.os.Looper;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.security.KeyStore;
 import java.util.Arrays;
 
 /**
@@ -20,11 +23,12 @@ public class TeleOp extends OpMode {
     DcMotor rightBackDrive;
     DcMotor leftForwardDrive;
     DcMotor rightForwardDrive;
-    DcMotor shooter;
-    DcMotor rightShooter;
-    DcMotor intake;
-    Servo buttonPusher;
-	GyroSensor gyro;
+    //DcMotor shooter;
+    //DcMotor rightShooter;
+    //DcMotor intake;
+    //Servo buttonPusher;
+	MyGyro gyro;
+    SensorManager sensorManager;
     String motorType;
     float joystick_1_x;
     float joystick_1_y;
@@ -43,12 +47,14 @@ public class TeleOp extends OpMode {
         leftForwardDrive = hardwareMap.dcMotor.get("left_forward_drive");
         rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         rightForwardDrive.setDirection(DcMotor.Direction.REVERSE);
-        shooter = hardwareMap.dcMotor.get("shooter");
+        //shooter = hardwareMap.dcMotor.get("shooter");
         //rightShooter = hardwareMap.dcMotor.get("right_shooter");
         //intake = hardwareMap.dcMotor.get("intake");
-        buttonPusher = hardwareMap.servo.get("buttonPusher");
-		gyro = hardwareMap.gyroSensor.get("gyro");
-        gyro.calibrate();
+        //buttonPusher = hardwareMap.servo.get("buttonPusher");
+        sensorManager = (SensorManager)hardwareMap.appContext.getSystemService(Context.SENSOR_SERVICE);
+        Looper.prepare();
+		gyro =  new MyGyro();
+        sensorManager.registerListener(gyro, sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_GAME);
         motorType = "mech";
         joystick_1_x = 0;
         joystick_1_y = 0;
@@ -125,11 +131,12 @@ public class TeleOp extends OpMode {
         } else if (motorType.equals("arcade")) {
             //Coming soon...
         } else if (motorType.equals("mech")) {
-			double error = gyro.getRotationFraction();
+			double error = gyro.getAngle();
+            telemetry.addData("error", Double.toString(error));
             float gply = gamepad.left_stick_y;
             float gplx = gamepad.left_stick_x;
             float gprx = gamepad.right_stick_x;
-			double turn = gprx-error;
+			double turn = gprx;//-error;
             double lf = gply+gplx+turn;
             double rf = gply-gplx-turn;
             double lb = gply-gplx+turn;
@@ -151,27 +158,27 @@ public class TeleOp extends OpMode {
 
     public void updateShooters(boolean shouldShoot) {
         if (shouldShoot) {
-            shooter.setPower(1);
+            //shooter.setPower(1);
             //rightShooter.setPower(-1);
         } else {
-            shooter.setPower(0);
+            //shooter.setPower(0);
             //rightShooter.setPower(0);
         }
     }
 
     public void updateIntake(boolean shouldIntake) {
         if (shouldIntake) {
-            intake.setPower(1);
+            //intake.setPower(1);
         } else {
-            intake.setPower(0);
+            //intake.setPower(0);
         }
     }
 
     public void updateButtonPusher(boolean shouldPress) {
         if (shouldPress) {
-            buttonPusher.setPosition(90);
+            //buttonPusher.setPosition(90);
         } else {
-            buttonPusher.setPosition(0);
+            //buttonPusher.setPosition(0);
         }
     }
 }
