@@ -50,5 +50,5 @@ public class Test extends OpMode {
         //double val = gyro.getAngle();
         //telemetry.addData("sensor", Double.toString(val));
         telemetry.addData("Light sensor", lightSensor.getVoltage());
-    }
+//    }
 }
