@@ -50,21 +50,5 @@ public class Test extends OpMode {
         //double val = gyro.getAngle();
         //telemetry.addData("sensor", Double.toString(val));
         telemetry.addData("Light sensor", lightSensor.getVoltage());
-
-        if (lightSensor.getVoltage() < 1)
-        {
-            leftBackDrive.setPower(1);
-            rightBackDrive.setPower(0);
-            leftForwardDrive.setPower(1);
-            rightForwardDrive.setPower(0);
-        }
-        else
-        {
-            leftBackDrive.setPower(0);
-            rightBackDrive.setPower(1);
-            leftForwardDrive.setPower(0);
-            rightForwardDrive.setPower(1);
-        }
-    }
 //    }
 }
