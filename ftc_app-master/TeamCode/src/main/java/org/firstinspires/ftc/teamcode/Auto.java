@@ -32,6 +32,8 @@ public class Auto extends OpMode {
     ElapsedTime timer;
     int team;
     int state;
+        UltrasonicSensor distanceSensor;
+
     int TO_FIRST_LINE;
     int CHECK_FIRST_LINE;
     int TURN_TO_FIRST_BEACON;
@@ -44,7 +46,6 @@ public class Auto extends OpMode {
     int PUSH_SECOND_BEACON;
     int BEACON_DISTANCE;
     int LINE_VALUE;
-    UltrasonicSensor distanceSensor;
 
     int BLUE;
     int RED;

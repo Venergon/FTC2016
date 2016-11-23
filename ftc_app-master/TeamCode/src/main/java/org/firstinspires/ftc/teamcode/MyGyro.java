@@ -34,7 +34,7 @@ public class MyGyro extends Activity implements SensorEventListener {
     }
 
     public float getAngle() {
-        return angle;
+        return Math.abs(angle) > 0.2? angle : 0;
     }
 
     @Override

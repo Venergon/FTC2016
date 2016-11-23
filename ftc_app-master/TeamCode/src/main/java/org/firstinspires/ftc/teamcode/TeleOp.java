@@ -23,10 +23,11 @@ public class TeleOp extends OpMode {
     DcMotor rightBackDrive;
     DcMotor leftForwardDrive;
     DcMotor rightForwardDrive;
-    //DcMotor shooter;
+    DcMotor shooter;
     //DcMotor rightShooter;
     //DcMotor intake;
-    //Servo buttonPusher;
+    Servo buttonPusherLeft;
+    Servo buttonPusherRight;
 	MyGyro gyro;
     SensorManager sensorManager;
     String motorType;
@@ -38,19 +39,24 @@ public class TeleOp extends OpMode {
     boolean buttonB;
     boolean buttonY;
     boolean buttonA;
+    float leftTrigger;
+    float rightTrigger;
+    boolean leftBumper;
+    boolean rightBumper;
+    double WEIGHT;
     //Run once when turned on
     @Override
     public void init() {
         leftBackDrive = hardwareMap.dcMotor.get("left_back_drive");
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive = hardwareMap.dcMotor.get("right_back_drive");
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         leftForwardDrive = hardwareMap.dcMotor.get("left_forward_drive");
+        leftForwardDrive.setDirection(DcMotor.Direction.REVERSE);
         rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
-        rightForwardDrive.setDirection(DcMotor.Direction.REVERSE);
-        //shooter = hardwareMap.dcMotor.get("shooter");
-        //rightShooter = hardwareMap.dcMotor.get("right_shooter");
+        shooter = hardwareMap.dcMotor.get("shooter");
         //intake = hardwareMap.dcMotor.get("intake");
-        //buttonPusher = hardwareMap.servo.get("buttonPusher");
+        buttonPusherLeft = hardwareMap.servo.get("button_pusher_left");
+        buttonPusherRight = hardwareMap.servo.get("button_pusher_right");
         sensorManager = (SensorManager)hardwareMap.appContext.getSystemService(Context.SENSOR_SERVICE);
         Looper.prepare();
 		gyro =  new MyGyro();
@@ -64,6 +70,7 @@ public class TeleOp extends OpMode {
         buttonB = false;
         buttonY = false;
         buttonA = false;
+        WEIGHT = 1;
     }
 
     //Runs repeatedly until play is hit
@@ -93,18 +100,22 @@ public class TeleOp extends OpMode {
         buttonB = gamepad2.b;
         buttonY = gamepad2.y;
         buttonA = gamepad2.a;
+        leftTrigger = gamepad2.left_trigger;
+        rightTrigger = gamepad2.right_trigger;
+        leftBumper = gamepad2.left_bumper;
+        rightBumper = gamepad2.right_bumper;
 
         //update motors
         updateMotors(gamepad1);
 
         //update shooters
-        updateShooters(buttonX);
+        updateShooter(buttonX);
 
         //update intake
         //updateIntake(buttonB);
 
         //update button pusher
-        updateButtonPusher(buttonY);
+        updateButtonPusher(leftTrigger > 0.5, rightTrigger > 0.5);
     }
 
 
@@ -118,7 +129,7 @@ public class TeleOp extends OpMode {
         leftForwardDrive.setPower(0);
         rightForwardDrive.setPower(0);
         //updateIntake(false);
-        updateButtonPusher(false);
+        updateButtonPusher(false, false);
     }
 
     public void updateMotors(Gamepad gamepad) {
@@ -130,13 +141,12 @@ public class TeleOp extends OpMode {
         } else if (motorType.equals("arcade")) {
             //Coming soon...
         } else if (motorType.equals("mech")) {
-        updateShooters(false);
 			double error = gyro.getAngle();
             telemetry.addData("error", Double.toString(error));
-            float gply = gamepad.left_stick_y;
+            float gply = -gamepad.left_stick_y;
             float gplx = gamepad.left_stick_x;
             float gprx = gamepad.right_stick_x;
-			double turn = gprx-error;
+			double turn = gprx;//-error;
             double lf = gply+gplx+turn;
             double rf = gply-gplx-turn;
             double lb = gply-gplx+turn;
@@ -149,20 +159,26 @@ public class TeleOp extends OpMode {
                 lb = lb / sortList[3];
                 rb = rb / sortList[3];
             }
-            leftBackDrive.setPower(lb);
-            rightBackDrive.setPower(rb);
-            leftForwardDrive.setPower(lf);
-            rightForwardDrive.setPower(rf);
+            if (WEIGHT < 1) {
+                WEIGHT = 1 / WEIGHT;
+                leftBackDrive.setPower(lb);
+                rightBackDrive.setPower(rb);
+                leftForwardDrive.setPower(lf / WEIGHT);
+                rightForwardDrive.setPower(lf / WEIGHT);
+            } else {
+                leftBackDrive.setPower(lb / WEIGHT);
+                rightBackDrive.setPower(rb / WEIGHT);
+                leftForwardDrive.setPower(lf);
+                rightForwardDrive.setPower(rf);
+            }
         }
     }
 
-    public void updateShooters(boolean shouldShoot) {
+    public void updateShooter(boolean shouldShoot) {
         if (shouldShoot) {
-            //shooter.setPower(1);
-            //rightShooter.setPower(-1);
+            shooter.setPower(1);
         } else {
-            //shooter.setPower(0);
-            //rightShooter.setPower(0);
+            shooter.setPower(0);
         }
     }
 
@@ -174,11 +190,16 @@ public class TeleOp extends OpMode {
         }
     }
 
-    public void updateButtonPusher(boolean shouldPress) {
-        if (shouldPress) {
-            //buttonPusher.setPosition(90);
+    public void updateButtonPusher(boolean trigger1, boolean trigger2) {
+        if (trigger1) {
+            buttonPusherLeft.setPosition(1);
         } else {
-            //buttonPusher.setPosition(0);
+            buttonPusherLeft.setPosition(0);
+        }
+        if (trigger2) {
+            buttonPusherRight.setPosition(1);
+        } else {
+            buttonPusherRight.setPosition(0);
         }
     }
 }
