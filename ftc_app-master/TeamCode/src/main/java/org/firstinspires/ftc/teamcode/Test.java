@@ -51,7 +51,7 @@ public class Test extends OpMode {
         //telemetry.addData("sensor", Double.toString(val));
         telemetry.addData("Light sensor", lightSensor.getVoltage());
 
-        if (lightSensor.getVoltage() < 1)
+        /*if (lightSensor.getVoltage() < 1)
         {
             leftBackDrive.setPower(1);
             rightBackDrive.setPower(0);
@@ -64,7 +64,7 @@ public class Test extends OpMode {
             rightBackDrive.setPower(1);
             leftForwardDrive.setPower(0);
             rightForwardDrive.setPower(1);
-        }
+        }*/
     }
 //    }
 }

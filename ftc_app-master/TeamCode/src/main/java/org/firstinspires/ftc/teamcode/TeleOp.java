@@ -117,7 +117,6 @@ public class TeleOp extends OpMode {
         rightBackDrive.setPower(0);
         leftForwardDrive.setPower(0);
         rightForwardDrive.setPower(0);
-        updateShooters(false);
         //updateIntake(false);
         updateButtonPusher(false);
     }
@@ -131,12 +130,13 @@ public class TeleOp extends OpMode {
         } else if (motorType.equals("arcade")) {
             //Coming soon...
         } else if (motorType.equals("mech")) {
+        updateShooters(false);
 			double error = gyro.getAngle();
             telemetry.addData("error", Double.toString(error));
             float gply = gamepad.left_stick_y;
             float gplx = gamepad.left_stick_x;
             float gprx = gamepad.right_stick_x;
-			double turn = gprx;//-error;
+			double turn = gprx-error;
             double lf = gply+gplx+turn;
             double rf = gply-gplx-turn;
             double lb = gply-gplx+turn;
