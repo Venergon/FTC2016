@@ -7,7 +7,6 @@ import android.os.Looper;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -26,7 +25,7 @@ public class TeleOp extends OpMode {
     DcMotor rightForwardDrive;
     DcMotor shooter;
     DcMotor intake;
-    Servo buttonPusherLeft;
+    //Servo buttonPusherLeft;
     //Servo buttonPusherRight;
 	//MyGyro gyro;
     SensorManager sensorManager;
@@ -56,7 +55,7 @@ public class TeleOp extends OpMode {
         rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         shooter = hardwareMap.dcMotor.get("shooter");
         intake = hardwareMap.dcMotor.get("intake");
-        buttonPusherLeft = hardwareMap.servo.get("button_pusher_left");
+        //buttonPusherLeft = hardwareMap.servo.get("button_pusher_left");
         //buttonPusherRight = hardwareMap.servo.get("button_pusher_right");
         sensorManager = (SensorManager)hardwareMap.appContext.getSystemService(Context.SENSOR_SERVICE);
         //Looper.prepare();
@@ -219,9 +218,9 @@ public class TeleOp extends OpMode {
 
     public void updateButtonPusher(boolean trigger1, boolean trigger2) {
         if (trigger1) {
-            buttonPusherLeft.setPosition(1);
+            //buttonPusherLeft.setPosition(1);
         } else {
-            buttonPusherLeft.setPosition(0);
+            //buttonPusherLeft.setPosition(0);
         }
         if (trigger2) {
             //buttonPusherRight.setPosition(1);

@@ -12,7 +12,7 @@ import android.os.Bundle;
  */
 public class MyGyro extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
-    private float angle;
+    private double angle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,11 +30,11 @@ public class MyGyro extends Activity implements SensorEventListener {
 
     private void getGyro(SensorEvent event) {
         float[] values = event.values;
-        angle = values[2];
+        angle = values[2]*Math.PI;
     }
 
-    public float getAngle() {
-        return Math.abs(angle) > 0.2? angle : 0;
+    public double getAngle() {
+        return angle;
     }
 
     @Override
