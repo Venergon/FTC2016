@@ -1,17 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.content.Context;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.os.Looper;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import java.util.Arrays;
 
 /**
  * Created by Segway on 19-Oct-16.
@@ -26,8 +21,7 @@ public class TeleOp extends OpMode {
     DcMotor rightForwardDrive;
     DcMotor shooter;
     DcMotor intake;
-    Servo buttonPusherLeft;
-    //Servo buttonPusherRight;
+    Servo buttonPivot;
 	//MyGyro gyro;
     SensorManager sensorManager;
     String motorType;
@@ -56,8 +50,7 @@ public class TeleOp extends OpMode {
         rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         shooter = hardwareMap.dcMotor.get("shooter");
         intake = hardwareMap.dcMotor.get("intake");
-        buttonPusherLeft = hardwareMap.servo.get("button_pusher_left");
-        //buttonPusherRight = hardwareMap.servo.get("button_pusher_right");
+        buttonPivot = hardwareMap.servo.get("button_pivot");
         sensorManager = (SensorManager)hardwareMap.appContext.getSystemService(Context.SENSOR_SERVICE);
         //Looper.prepare();
 		//gyro =  new MyGyro();
@@ -118,7 +111,7 @@ public class TeleOp extends OpMode {
         updateIntake(buttonB);
 
         //update button pusher
-        updateButtonPusher(leftTrigger > 0.5, rightTrigger > 0.5);
+        updateButtonPivot(leftBumper, rightBumper);
     }
 
 
@@ -132,7 +125,7 @@ public class TeleOp extends OpMode {
         leftForwardDrive.setPower(0);
         rightForwardDrive.setPower(0);
         updateIntake(false);
-        updateButtonPusher(false, false);
+        updateButtonPivot(false, false);
     }
 
     public void updateMotors(Gamepad gamepad) {
@@ -217,16 +210,11 @@ public class TeleOp extends OpMode {
         }
     }
 
-    public void updateButtonPusher(boolean trigger1, boolean trigger2) {
+    public void updateButtonPivot(boolean trigger1, boolean trigger2) {
         if (trigger1) {
-            buttonPusherLeft.setPosition(1);
-        } else {
-            buttonPusherLeft.setPosition(0);
-        }
-        if (trigger2) {
-            //buttonPusherRight.setPosition(1);
-        } else {
-            //buttonPusherRight.setPosition(0);
+            buttonPivot.setPosition(1);
+        } else if (trigger2) {
+            buttonPivot.setPosition(0);
         }
     }
 

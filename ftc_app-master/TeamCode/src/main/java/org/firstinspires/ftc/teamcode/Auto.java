@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -21,19 +19,17 @@ public class Auto extends OpMode {
     DcMotor rightBackDrive;
     DcMotor leftForwardDrive;
     DcMotor rightForwardDrive;
-    //DcMotor shooter;
-    //DcMotor intake;
-    Servo buttonPusherLeft;
-    Servo buttonPusherRight;
-    AnalogInput leftLightSensor;
-    AnalogInput rightLightSensor;
-    AnalogInput leftColorSensor;
-    AnalogInput rightColorSensor;
+    DcMotor shooter;
+    DcMotor intake;
+    Servo buttonPivot;
+    AnalogInput lightSensor;
+    //AnalogInput rightLightSensor;
+    AnalogInput redColorSensor;
+    AnalogInput blueColorSensor;
     String motorType;
     ElapsedTime timer;
     int team;
     int state;
-    int beaconSide;
     UltrasonicSensor distanceSensor;
 
     int TO_FIRST_LINE;
@@ -82,15 +78,12 @@ public class Auto extends OpMode {
         rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         rightForwardDrive.setDirection(DcMotor.Direction.REVERSE);
         rightForwardDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //shooter = hardwareMap.dcMotor.get("shooter");
-        //buttonPusher = hardwareMap.servo.get("button_pusher");
-        buttonPusherLeft = hardwareMap.servo.get("button_pusher_left");
-        buttonPusherRight = hardwareMap.servo.get("button_pusher_right");
-        leftLightSensor = hardwareMap.analogInput.get("left_light_sensor");
-        rightLightSensor = hardwareMap.analogInput.get("right_light_sensor");
-        leftColorSensor = hardwareMap.analogInput.get("left_color_sensor");
-        rightColorSensor = hardwareMap.analogInput.get("right_color_sensor");
-        distanceSensor = hardwareMap.ultrasonicSensor.get("distanceSensor");
+        shooter = hardwareMap.dcMotor.get("shooter");
+        buttonPivot = hardwareMap.servo.get("button_pivot");
+        redColorSensor = hardwareMap.analogInput.get("red_color_sensor");
+        blueColorSensor = hardwareMap.analogInput.get("blue_color_sensor");
+        lightSensor = hardwareMap.analogInput.get("light_sensor");
+        distanceSensor = hardwareMap.ultrasonicSensor.get("distance_sensor");
 
         motorType = "mech";
         timer = new ElapsedTime();
@@ -107,6 +100,7 @@ public class Auto extends OpMode {
     }
 
     public void loop() {
+        telemetry.addData("State",state);
         if (state == TO_FIRST_LINE) {
             leftBackDrive.setPower(1);
             rightBackDrive.setPower(1);
@@ -115,7 +109,7 @@ public class Auto extends OpMode {
             state = CHECK_FIRST_LINE;
         } else if (state == CHECK_FIRST_LINE) {
             if (team == BLUE) {
-                if (rightLightSensor.getVoltage() < LINE_VALUE) {
+                if (lightSensor.getVoltage() < LINE_VALUE) {
                     leftBackDrive.setPower(0);
                     rightBackDrive.setPower(0);
                     leftForwardDrive.setPower(0);
@@ -123,7 +117,7 @@ public class Auto extends OpMode {
                     state = TURN_TO_FIRST_BEACON;
                 }
             } else {
-                if (leftLightSensor.getVoltage() < LINE_VALUE) {
+                if (lightSensor.getVoltage() < LINE_VALUE) {
                     leftBackDrive.setPower(0);
                     rightBackDrive.setPower(0);
                     leftForwardDrive.setPower(0);
@@ -135,12 +129,12 @@ public class Auto extends OpMode {
             if (distanceSensor.getUltrasonicLevel() < BEACON_DISTANCE) {
                 pushButton(findBeaconSide());
                 state = STRAFE_TO_SECOND_BEACON;
-            } else if (leftLightSensor.getVoltage() < LINE_VALUE) {
+            } else if (lightSensor.getVoltage() < LINE_VALUE) {
                 leftBackDrive.setPower(1);
                 rightBackDrive.setPower(0.5);
                 leftForwardDrive.setPower(1);
                 rightForwardDrive.setPower(0.5);
-            } else if (rightLightSensor.getVoltage() < LINE_VALUE) {
+            } else if (lightSensor.getVoltage() < LINE_VALUE) {
                 rightBackDrive.setPower(0.5);
                 leftBackDrive.setPower(1);
                 rightForwardDrive.setPower(0.5);
@@ -166,7 +160,7 @@ public class Auto extends OpMode {
             state = CHECK_SECOND_LINE;
         } else if (state == CHECK_SECOND_LINE) {
             if (team == BLUE) {
-                if (rightLightSensor.getVoltage() < LINE_VALUE) {
+                if (true){//rightLightSensor.getVoltage() < LINE_VALUE) {
                     leftBackDrive.setPower(0);
                     rightBackDrive.setPower(0);
                     leftForwardDrive.setPower(0);
@@ -174,7 +168,7 @@ public class Auto extends OpMode {
                     state = TURN_TO_SECOND_BEACON;
                 }
             } else {
-                if (leftLightSensor.getVoltage() < LINE_VALUE) {
+                if (true){//leftLightSensor.getVoltage() < LINE_VALUE) {
                     leftBackDrive.setPower(0);
                     rightBackDrive.setPower(0);
                     leftForwardDrive.setPower(0);
@@ -185,12 +179,12 @@ public class Auto extends OpMode {
         } else if (state == TURN_TO_SECOND_BEACON) {
             if (distanceSensor.getUltrasonicLevel() < BEACON_DISTANCE) {
                 pushButton(findBeaconSide());
-            } else if (leftLightSensor.getVoltage() < LINE_VALUE) {
+            } else if (true){//leftLightSensor.getVoltage() < LINE_VALUE) {
                 leftBackDrive.setPower(1);
                 rightBackDrive.setPower(0.5);
                 leftForwardDrive.setPower(1);
                 rightForwardDrive.setPower(0.5);
-            } else if (rightLightSensor.getVoltage() < LINE_VALUE) {
+            } else if (true){//rightLightSensor.getVoltage() < LINE_VALUE) {
                 rightBackDrive.setPower(0.5);
                 leftBackDrive.setPower(1);
                 rightForwardDrive.setPower(0.5);
@@ -205,7 +199,8 @@ public class Auto extends OpMode {
     }
 
     public int findBeaconSide() {
-        if (leftColorSensor.getVoltage() < rightColorSensor.getVoltage()) {
+        buttonPivot.setPosition(0.2);
+        if (redColorSensor.getVoltage() < blueColorSensor.getVoltage()) {
             //Left is more red, right is more blue
             if (team == RED) {
                 return LEFT;
@@ -223,26 +218,18 @@ public class Auto extends OpMode {
     }
 
     public void pushButton(int side) {
+        buttonPivot.setPosition(side);
+        while (Math.abs(buttonPivot.getPosition() - side) > 0.1) {
+
+        }
         leftBackDrive.setPower(1);
         rightBackDrive.setPower(1);
         leftForwardDrive.setPower(1);
         rightForwardDrive.setPower(1);
-        if (side == LEFT) {
-            buttonPusherLeft.setPosition(1);
-            try {
-                timer.wait(BUTTON_PUSH_TIME);
-            } catch (InterruptedException e) {
-                telemetry.addData("Interrupted", "I've been interrupted");
-            }
-            buttonPusherLeft.setPosition(0);
-        } else {
-            buttonPusherRight.setPosition(1);
-            try {
-                timer.wait(BUTTON_PUSH_TIME);
-            } catch (InterruptedException e) {
-                telemetry.addData("Interrupted", "I've been interrupted");
-            }
-            buttonPusherRight.setPosition(0);
+        try {
+            timer.wait(BUTTON_PUSH_TIME);
+        } catch (InterruptedException e) {
+            telemetry.addData("Interrupted", e);
         }
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);

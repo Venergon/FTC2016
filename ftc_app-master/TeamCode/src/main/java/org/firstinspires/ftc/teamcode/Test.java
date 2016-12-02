@@ -7,6 +7,9 @@ import android.os.Looper;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.AnalogOutput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
@@ -25,13 +28,15 @@ public class Test extends OpMode {
     //AnalogInput sensorTest;
     //SensorManager sensorManager;
     //MyGyro gyro;
-    AnalogInput lightSensor;
+    //AnalogInput redColorSensor;
+    //AnalogInput blueColorSensor;
     //Servo servoTest;
-//    DcMotor leftBackDrive;
-//    DcMotor leftForwardDrive;
-//    DcMotor rightBackDrive;
-//    DcMotor rightForwardDrive;
-    //AnalogInput distanceSensor;
+    DcMotor leftBackDrive;
+    DcMotor leftForwardDrive;
+    DcMotor rightBackDrive;
+    DcMotor rightForwardDrive;
+    AnalogInput lightSensor;
+    DigitalChannel distanceSensor;
 
     public void init() {
         //Looper.prepare();
@@ -41,14 +46,19 @@ public class Test extends OpMode {
         //first = true;
 
         //sensorTest = hardwareMap.analogInput.get("sensors");
+        //redColorSensor = hardwareMap.analogInput.get("red_color_sensor");
+        //blueColorSensor = hardwareMap.analogInput.get("blue_color_sensor");
+        leftBackDrive = hardwareMap.dcMotor.get("left_back_drive");
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftForwardDrive = hardwareMap.dcMotor.get("left_forward_drive");
+        leftForwardDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackDrive = hardwareMap.dcMotor.get("right_back_drive");
+        rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         lightSensor = hardwareMap.analogInput.get("light_sensor");
-//        leftBackDrive = hardwareMap.dcMotor.get("left_back_drive");
-//        leftForwardDrive = hardwareMap.dcMotor.get("left_forward_drive");
-//        rightBackDrive = hardwareMap.dcMotor.get("right_back_drive");
-//        rightForwardDrive = hardwareMap.dcMotor.get("right_forward_drive");
         //servoTest = hardwareMap.servo.get("servo_test");
         //servoTest.setPosition(0);
-        //distanceSensor = hardwareMap.analogInput.get("distance_sensor");
+        distanceSensor = hardwareMap.digitalChannel.get("distance_sensor");
+        //telemetry.addData("Version", "1");
     }
 
     public void init_loop() {
@@ -68,23 +78,31 @@ public class Test extends OpMode {
 
         //double val = gyro.getAngle();
         //telemetry.addData("sensor", Double.toString(val));
+        //telemetry.addData("Red color sensor", redColorSensor.getVoltage());
+        //telemetry.addData("Blue color sensor", blueColorSensor.getVoltage());
         telemetry.addData("Light sensor", lightSensor.getVoltage());
-
-//        if (lightSensor.getVoltage() < 1)
-//        {
-//            leftBackDrive.setPower(1);
-//            rightBackDrive.setPower(0);
-//            leftForwardDrive.setPower(1);
-//            rightForwardDrive.setPower(0);
-//        }
-//        else
-//        {
-//            leftBackDrive.setPower(0);
-//            rightBackDrive.setPower(1);
-//            leftForwardDrive.setPower(0);
-//            rightForwardDrive.setPower(1);
-//        }
-
+        //--------------------------------------------
+        if (distanceSensor.getState()) {
+            if (lightSensor.getVoltage() > 3.6) {
+                telemetry.addData("Found", "!");
+                leftBackDrive.setPower(0.1);
+                rightBackDrive.setPower(0);
+                leftForwardDrive.setPower(0.1);
+                rightForwardDrive.setPower(0);
+            } else {
+                leftBackDrive.setPower(0);
+                rightBackDrive.setPower(0.1);
+                leftForwardDrive.setPower(0);
+                rightForwardDrive.setPower(0.1);
+            }
+        } else {
+            leftBackDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
+            leftForwardDrive.setPower(0);
+            rightForwardDrive.setPower(0);
+        }
+        //--------------------------------------------
     //}
         //telemetry.addData("Distance", distanceSensor.getVoltage());
     }
