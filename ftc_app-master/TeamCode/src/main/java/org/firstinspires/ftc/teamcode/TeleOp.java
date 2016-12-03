@@ -22,6 +22,7 @@ public class TeleOp extends OpMode {
     DcMotor shooter;
     DcMotor intake;
     Servo buttonPivot;
+    Servo ballHolder;
 	//MyGyro gyro;
     SensorManager sensorManager;
     String motorType;
@@ -51,6 +52,7 @@ public class TeleOp extends OpMode {
         shooter = hardwareMap.dcMotor.get("shooter");
         intake = hardwareMap.dcMotor.get("intake");
         buttonPivot = hardwareMap.servo.get("button_pivot");
+        ballHolder = hardwareMap.servo.get("ball_holder");
         sensorManager = (SensorManager)hardwareMap.appContext.getSystemService(Context.SENSOR_SERVICE);
         //Looper.prepare();
 		//gyro =  new MyGyro();
@@ -112,6 +114,7 @@ public class TeleOp extends OpMode {
 
         //update button pusher
         updateButtonPivot(leftBumper, rightBumper);
+        updateBallHolder(buttonY);
     }
 
 
@@ -218,5 +221,11 @@ public class TeleOp extends OpMode {
         }
     }
 
-
+    public void updateBallHolder(boolean shouldRelease) {
+        if (shouldRelease) {
+            ballHolder.setPosition(1);
+        } else {
+            ballHolder.setPosition(0);
+        }
+    }
 }
